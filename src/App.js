@@ -38,7 +38,7 @@ function App() {
           AppToaster.show({
             message: 'User added successfully',
             intent: 'success',
-            timeout: 3000
+            timeout: 2000
           })
           setNewEmail('');
           setNewName('');
@@ -69,18 +69,34 @@ function App() {
     })
       .then(response => response.json())
       .then(data => {
-        //  setUsers([...users, data]);
         AppToaster.show({
           message: 'User updated successfully',
           intent: 'success',
-          timeout: 3000
+          timeout: 2000
         })
       })
+  }
 
+  function handleDeleteUser(id) {
+    fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
+      method: "DELETE"
+    })
+      .then(response => response.json())
+      .then(data => {
+        setUsers((users) => {
+          return users.filter((user) => user.id !== id)
+        })
+        AppToaster.show({
+          message: 'User deleted successfully',
+          intent: 'success',
+          timeout: 2000
+        })
+      })
   }
 
   return (
     <div className="App">
+      <h2>Crud Operations</h2>
       <table className='bp4-html-table modifier'>
         <thead>
           <th>ID</th>
@@ -99,8 +115,8 @@ function App() {
               <td><EditableText onChange={value => onChangeHandler(user.id, 'email', value)} value={user.email}></EditableText></td>
               <td><EditableText onChange={value => onChangeHandler(user.id, 'website', value)} value={user.website}></EditableText></td>
               <td>
-                <Button intent='primary' onClick={() => handleUpdateUser(user.id)}>Update</Button>
-                <Button intent='danger'>Delete</Button>
+                <Button intent='primary' onClick={() => handleUpdateUser(user.id)}>Update</Button>&nbsp;
+                <Button intent='danger' onClick={() => handleDeleteUser(user.id)}>Delete</Button>
               </td>
             </tr>
           )}
